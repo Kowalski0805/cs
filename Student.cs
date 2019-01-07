@@ -1,51 +1,67 @@
 using System;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace App {
     class Student : Person, ICloneable {
-        enum Education {
+        public enum Education {
             Master,
             Bachelor,
             SecondEducator,
             PhD
         }
 
-        private Education Education;
+        private Education _education;
         private string _group;
         private int _cardNumber;
-        private Examination[] _exams;
-        private readonly float _average {
+        private List<Examination> _exams;
+        private float _average {
             get {
-                int sum;
-                for (byte i = 0; i < _exams.Length; i++) {
-                    sum += _exams[i].mark;
+                int sum = 0;
+                foreach (Examination exam in _exams) {
+                    sum += exam._mark;
                 }
-                return sum/_exams.Length;
+                return sum/_exams.Count;
             }
         }
 
-        public Student(string name, string surname, DateTime birthday, Education education, string group, int cardNumber, Examination[] exams) {
-            base(name, surname, birthday);
-            Education = education;
+        public Student() : base("Ім'я", "Прізвище", new DateTime(1970, 1, 1)) {
+            _education = Education.Bachelor;
+            _group = "Група";
+            _cardNumber = 111111;
+            _exams = new List<Examination>{};
+        }
+        public Student(string name, string surname, DateTime birthday, Education education, string group, int cardNumber, List<Examination> exams) : base(name, surname, birthday) {
+            _education = education;
             _group = group;
             _cardNumber = cardNumber;
             _exams = exams;
         }
-        public void AddExams(Examination[] exams) {
-            this._exams = this._exams.Concat(exams).ToArray();
+        public void AddExams(List<Examination> exams) {
+            _exams.AddRange(exams);
         }
 
-        public override ToString() {
-            return this._name + ' ' + this._surname + ' ' + this._group;
+        public override string ToString() {
+            return _name + ' ' + _surname + ' ' + _group;
         }
 
-        public override PrintFullInfo() {
-            Console.WriteLine("" + _name + "" + _surname + "" + Education + "" + _birthday.ToShortDateString() + "" + _group + "" + _cardNumber + "" + _exams.ToString() + "" + _average);
+        public override void PrintFullInfo() {
+            Console.WriteLine("Ім'я: " + _name + " " + _surname + " | Освіта: " + _education + " | День народження: " + _birthday.ToShortDateString() + " | Група: " + _group + " | Залікова: " + _cardNumber + " | Екзамени: " + _exams.Aggregate("", (acc, e) => acc + e.ToString() + ", ") + " | Сер.бал: " + _average);
         }
 
         public object Clone() {
-            Examination[] exams = new Examination[_exams.Length];
-            _exams.CopyTo(exams);
-            return new Student()
+            List<Examination> exams = new List<Examination>(_exams);
+            return new Student(_name, _surname, _birthday, _education, _group, _cardNumber, exams);
+        }
+
+        public IEnumerable<Examination> NotMarked() {
+            foreach (Examination exam in _exams) {
+                if (exam._isMarked) yield return exam;
+            }
+        }
+
+        public List<Examination> getSortedExams() {
+            return _exams.OrderBy(si => si._subject).ToList();
         }
     }
 }

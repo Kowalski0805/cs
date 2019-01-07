@@ -1,34 +1,35 @@
 using System;
+using System.Collections.Generic;
 
 namespace App {
     class Examination {
         private byte _semester;
-        private string _subject;
-        private string[] _teacher;
-        public byte mark { get; }
-        private bool _isMarked;
+        public string _subject { get; }
+        private List<string> _teacher;
+        public byte _mark { get; }
+        public bool _isMarked { get; }
         private DateTime _date;
 
         public Examination() {
-            this._semester = 1;
-            this._subject = "Предмет";
-            this._teacher = new Array("Прізвище", "І.Б.");
-            this._mark = 100;
-            this._isMarked = true;
-            this._date = new DateTime(1970, 1, 1);
+            _semester = 1;
+            _subject = "Предмет";
+            _teacher = new List<string>{"Прізвище", "І.Б."};
+            _mark = 100;
+            _isMarked = true;
+            _date = new DateTime(1970, 1, 1);
         }
 
-        public Examination(byte semester, string subject, string[] teacher, byte mark, bool isMarked, DateTime date) {
-            this._semester = semester;
-            this._subject = subject;
-            this._teacher = teacher;
-            this._mark = mark;
-            this._isMarked = isMarked;
-            this._date = date;
+        public Examination(byte semester, string subject, List<string> teacher, byte mark, bool isMarked, DateTime date) {
+            _semester = semester;
+            _subject = subject;
+            _teacher = teacher;
+            _mark = mark;
+            _isMarked = isMarked;
+            _date = date;
         }
 
         public override string ToString() {
-            return this._subject + " " + this._teacher[0] + ' ' + this._mark;
+            return _subject + " " + _teacher[0] + ' ' + _mark;
         }
     }
 }
